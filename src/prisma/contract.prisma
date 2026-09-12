@@ -1,0 +1,77 @@
+// use prisma-next
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String?  @unique
+  name      String?
+
+  posts     Post[]
+  likes     Like[]
+  comments  Comment[]
+
+  followers Follow[] @relation("Followers")
+  following Follow[] @relation("Following")
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+
+  @@index([name])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+
+  likes     Like[]
+  comments  Comment[]
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+
+  createdAt TimestamptzString @default(now())
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+
+  follower    User     @relation("Followers", fields: [followerId], references: [id])
+  followerId  Int
+
+  following   User     @relation("Following", fields: [followingId], references: [id])
+  followingId Int
+
+  createdAt TimestamptzString @default(now())
+
+  @@unique([followerId, followingId])
+}
