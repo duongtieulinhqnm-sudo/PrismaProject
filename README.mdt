@@ -1,0 +1,57 @@
+# Prisma Project - PostgreSQL Database Practice
+## Giới thiệu
+Đây là project thực hành xây dựng và quản lý cơ sở dữ liệu bằng Prisma ORM kết hợp với PostgreSQL.
+Project được thực hiện với mục đích tìm hiểu cách Prisma làm việc với PostgreSQL, cách thiết kế Database, tạo các bảng có quan hệ với nhau, thêm và truy vấn dữ liệu, đồng thời kiểm tra hiệu năng Database khi số lượng dữ liệu tăng lên.
+Project mô phỏng một hệ thống mạng xã hội đơn giản, trong đó người dùng có thể tạo bài viết, thích bài viết, bình luận và theo dõi những người khác.
+---
+## Mục tiêu của project
+Các mục tiêu chính của project:
+- Làm quen với Prisma ORM.
+- Kết nối Prisma với PostgreSQL.
+- Tìm hiểu cách xây dựng Database Schema.
+- Tạo các bảng và thiết lập quan hệ giữa các bảng.
+- Tìm hiểu Primary Key và Foreign Key.
+- Tìm hiểu Unique Constraint.
+- Tìm hiểu Index và tác dụng của Index.
+- Thực hiện Seed dữ liệu.
+- Thử nghiệm thêm một lượng lớn dữ liệu vào Database.
+- Kiểm tra thời gian thực thi khi thêm dữ liệu.
+- Tìm hiểu cách tối ưu Database.
+- Tìm hiểu khả năng mở rộng Database khi số lượng người dùng tăng lên.
+---
+## Công nghệ sử dụng
+- **TypeScript** - Ngôn ngữ lập trình chính.
+- **Node.js** - Môi trường chạy ứng dụng.
+- **Prisma ORM**- ORM dùng để kết nối và thao tác với Database.
+- **PostgreSQL** - Hệ quản trị cơ sở dữ liệu.
+- **pgAdmin 4** - Công cụ quản lý và kiểm tra PostgreSQL.
+- **Git** - Quản lý phiên bản source code.
+- **GitHub** - Lưu trữ và chia sẻ project.
+---
+## Database
+Database của project sử dụng PostgreSQL.
+Database được thiết kế theo mô hình mạng xã hội đơn giản với 5 bảng chính:
+1. `User`
+2. `Post`
+3. `Like`
+4. `Comment`
+5. `Follow`
+Các bảng được liên kết với nhau bằng Primary Key và Foreign Key để đảm bảo dữ liệu có mối quan hệ rõ ràng và hạn chế dữ liệu không hợp lệ.
+--- 
+## Các bảng trong Database
+### 1. User
+Bảng `User` dùng để lưu trữ thông tin người dùng.
+Một User có thể:
+- Tạo nhiều bài viết.
+- Viết nhiều bình luận.
+- Thích nhiều bài viết.
+- Theo dõi nhiều người dùng khác.
+- Được nhiều người dùng khác theo dõi.
+`User` là bảng trung tâm và có quan hệ với nhiều bảng khác trong Database.
+---
+### 2. Post
+Bảng `Post` lưu thông tin các bài viết do người dùng tạo.
+Mỗi bài viết sẽ thuộc về một User cụ thể. Vì vậy, bảng `Post` có quan hệ với bảng `User` thông qua khóa ngoại `userId`.
+Quan hệ giữa User và Post:
+```text
+User 1 ───────── N Post
