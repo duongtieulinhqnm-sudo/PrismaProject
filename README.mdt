@@ -55,3 +55,68 @@ Mỗi bài viết sẽ thuộc về một User cụ thể. Vì vậy, bảng `Po
 Quan hệ giữa User và Post:
 ```text
 User 1 ───────── N Post
+# Những nội dung đã làm được
+Trong quá trình thực hiện project, đã hoàn thành và thực hiện được các nội dung sau:
+## 1. Thiết lập môi trường
+- Cài đặt Node.js.
+- Cài đặt và sử dụng PostgreSQL.
+- Cài đặt và sử dụng pgAdmin để quản lý Database.
+- Khởi tạo project Node.js/TypeScript.
+- Cài đặt Prisma và các package cần thiết.
+- Thiết lập Prisma để kết nối với PostgreSQL
+---
+## 2. Kết nối Prisma với PostgreSQL
+Đã thực hiện kết nối Prisma với PostgreSQL và kiểm tra kết nối giữa ứng dụng và Database.
+Mô hình hoạt động:
+```text
+TypeScript/Node.js -> Prisma -> PostgreSQL -> Database
+# Những nội dung chưa làm được
+Bên cạnh những nội dung đã thực hiện, project hiện vẫn còn một số phần chưa hoàn thành. Đây là những nội dung dự kiến sẽ tiếp tục phát triển trong thời gian tới.
+## 1. Chưa hoàn thiện Backend API
+Hiện tại project chủ yếu tập trung vào việc xây dựng Database, Prisma Schema và thực hành thao tác dữ liệu với PostgreSQL.
+Chưa xây dựng hoàn chỉnh hệ thống Backend API để Client có thể gửi Request và nhận Responese từ Server.
+Các API như:
+- Đăng ký User.
+- Đăng nhập User.
+- Lấy danh sách User.
+- Lấy thông tin một User.
+- Tạo Post.
+- Lấy danh sách Post.
+- Like Post.
+- Comment Post.
+- Follow Post.
+vẫn chưa được hoàn thiện đầy đủ.
+---
+## 2. Chưa làm chức năng Register và Login.
+Project hiện chưa hoàn thành hệ thống đăng ký và đăng nhập người dùng.
+Các chức năng chưa thực hiện:
+- Register.
+- Login.
+- Logout.
+- Mã hóa mật khẩu.
+- Kiểm tra tài khoản và mật khẩu.
+- Authentication.
+- Authorization.
+- JWT hoặc Session.
+Hiện tại bảng `User` chủ yếu được sử dụng để thực hành thiết kế Database và tạo dữ liệu mẫu.
+---
+## 3. Chưa hoàn thiện giao diện Frontend
+Project hiện chưa có giao diện Frontend hoàn chỉnh.
+Chưa xây dựng các giao diện như:
+- Trang đăng nhập.
+- Trang đăng ký.
+- Trang cá nhân.
+- Trang bài viết.
+- Trang hiển thị danh sách User.
+- Trang Like và Comment.
+- Trang Follow.
+Trong tương lai có thể xây dựng Frontend để kết nối với Backend API.
+---
+## 4. Chưa kiểm thử với số lượng dữ liệu rất lớn
+Hiện tại project đã thử nghiệm với 10.000 Users.
+Tuy nhiên chưa hoàn thành thử nghiệm với số lượng dữ liệu lớn hơn như:
+```text
+100.000 Users
+1.000.000 Users
+10.000.000 Users
+100.000.000 Users
