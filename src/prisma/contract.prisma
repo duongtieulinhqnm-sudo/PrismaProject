@@ -1,5 +1,262 @@
 // use prisma-next
 
+enum Platform {
+  TIKTOK
+  INSTAGRAM
+}
+
+model SocialAccount {
+  id             Int      @id @default(autoincrement())
+  platform       Platform
+  platformUserId String
+
+  username       String?
+  displayName    String?
+  bio            String?
+  avatarUrl      String?
+  isVerified     Boolean  @default(false)
+
+  createdAt      TimestamptzString @default(now())
+  updatedAt      temporal.updatedAtString()
+
+  metrics        AccountMetric[]
+  posts          SocialPost[]
+
+  @@unique([platform, platformUserId])
+  @@index([platform, username])
+}
+
+model AccountMetric {
+  id         Int      @id @default(autoincrement())
+  accountId  Int
+
+  followers  BigInt?
+  following  BigInt?
+  likes      BigInt?
+  videoCount BigInt?
+
+  recordedAt TimestamptzString @default(now())
+
+  account    SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, recordedAt])
+}
+
+model SocialPost {
+  id             Int      @id @default(autoincrement())
+  platform       Platform
+  platformPostId String
+
+  accountId      Int
+
+  postType       String?
+  caption        String?
+  permalink      String?
+
+  publishedAt    TimestamptzString?
+
+  duration       Int?
+  language       String?
+
+  thumbnailUrl   String?
+  mediaUrl       String?
+
+  createdAt      TimestamptzString @default(now())
+  updatedAt      temporal.updatedAtString()
+
+  account        SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  metrics        SocialPostMetric[]
+  comments       SocialComment[]
+  media          Media[]
+  hashtags       PostHashtag[]
+  sounds         PostSound[]
+
+  @@unique([platform, platformPostId])
+  @@index([accountId, publishedAt])
+  @@index([platform, publishedAt])
+}
+
+model SocialPostMetric {
+  id         Int      @id @default(autoincrement())
+  postId     Int
+
+  views      BigInt?
+  likes      BigInt?
+  comments   BigInt?
+  shares     BigInt?
+  favorites  BigInt?
+
+  recordedAt TimestamptzString @default(now())
+
+  post       SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, recordedAt])
+  @@index([recordedAt])
+}
+
+model SocialComment {
+  id                Int      @id @default(autoincrement())
+  platform          Platform
+  platformCommentId String
+
+  postId            Int
+  parentCommentId   String?
+
+  text              String?
+
+  likeCount         BigInt?
+  replyCount        BigInt?
+
+  publishedAt       TimestamptzString?
+  updatedAt         temporal.updatedAtString()
+
+  post              SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([platform, platformCommentId])
+  @@index([postId, publishedAt])
+}
+
+model Hashtag {
+  id       Int      @id @default(autoincrement())
+  platform Platform
+  name     String
+
+  posts    PostHashtag[]
+
+  @@unique([platform, name])
+}
+
+model PostHashtag {
+  postId    Int
+  hashtagId Int
+
+  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  hashtag   Hashtag    @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, hashtagId])
+}
+
+model Sound {
+  id              Int      @id @default(autoincrement())
+  platform        Platform
+  platformSoundId String
+
+  title           String?
+  artist          String?
+  duration        Int?
+
+  posts           PostSound[]
+
+  @@unique([platform, platformSoundId])
+}
+
+model PostSound {
+  postId  Int
+  soundId Int
+
+  post    SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  sound   Sound      @relation(fields: [soundId], references: [id], onDelete: Cascade)
+
+  @@id([postId, soundId])
+}
+
+model Media {
+  id              Int      @id @default(autoincrement())
+  postId          Int
+
+  storageProvider String
+  bucket          String
+  objectKey       String
+
+  mediaType       String?
+  mimeType        String?
+
+  fileSize        BigInt?
+  width           Int?
+  height          Int?
+  duration        Int?
+
+  sha256          String?
+
+  createdAt       TimestamptzString @default(now())
+
+  post            SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@unique([storageProvider, bucket, objectKey])
+}
+
+model RawObject {
+  id          Int      @id @default(autoincrement())
+
+  platform    Platform
+  objectType  String
+  sourceId    String?
+
+  bucket      String
+  objectKey   String
+
+  contentType String?
+  fileSize    BigInt?
+  sha256      String?
+
+  fetchedAt   TimestamptzString @default(now())
+
+  @@index([platform, objectType])
+  @@index([sourceId])
+}
+
+enum CrawlStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model CrawlJob {
+  id          Int         @id @default(autoincrement())
+
+  platform    Platform
+  targetType  String
+  targetValue String
+
+  status      CrawlStatus @default(PENDING)
+
+  startedAt   TimestamptzString?
+  finishedAt  TimestamptzString?
+
+  itemsFound  Int @default(0)
+  itemsSaved  Int @default(0)
+  itemsFailed Int @default(0)
+
+  errorMessage String?
+
+  createdAt   TimestamptzString @default(now())
+
+  @@index([platform, status])
+}
+
+model CrawlError {
+  id            Int      @id @default(autoincrement())
+
+  jobId         Int
+
+  platform      Platform
+
+  requestUrl    String?
+  statusCode    Int?
+  errorCode     String?
+
+  errorMessage  String
+
+  retryCount    Int      @default(0)
+
+  createdAt     TimestamptzString @default(now())
+
+  @@index([jobId])
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique

@@ -1,0 +1,1919 @@
+[
+  {
+    "id": "table.accountMetric",
+    "label": "Create table \"accountMetric\"",
+    "summary": "Creates table \"accountMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "accountMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"accountMetric\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"accountMetric\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"accountMetric\"",
+        "sql": "CREATE TABLE \"public\".\"accountMetric\" (\n  \"accountId\" int4 NOT NULL,\n  \"followers\" int8,\n  \"following\" int8,\n  \"id\" SERIAL NOT NULL,\n  \"likes\" int8,\n  \"recordedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"videoCount\" int8,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"accountMetric\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"accountMetric\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.crawlError",
+    "label": "Create table \"crawlError\"",
+    "summary": "Creates table \"crawlError\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "crawlError"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"crawlError\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlError\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"crawlError\"",
+        "sql": "CREATE TABLE \"public\".\"crawlError\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"errorCode\" text,\n  \"errorMessage\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"jobId\" int4 NOT NULL,\n  \"platform\" text NOT NULL,\n  \"requestUrl\" text,\n  \"retryCount\" int4 DEFAULT 0 NOT NULL,\n  \"statusCode\" int4,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"crawlError_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"crawlError\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlError\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.crawlJob",
+    "label": "Create table \"crawlJob\"",
+    "summary": "Creates table \"crawlJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "crawlJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"crawlJob\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlJob\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"crawlJob\"",
+        "sql": "CREATE TABLE \"public\".\"crawlJob\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"errorMessage\" text,\n  \"finishedAt\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"itemsFailed\" int4 DEFAULT 0 NOT NULL,\n  \"itemsFound\" int4 DEFAULT 0 NOT NULL,\n  \"itemsSaved\" int4 DEFAULT 0 NOT NULL,\n  \"platform\" text NOT NULL,\n  \"startedAt\" timestamptz,\n  \"status\" text DEFAULT 'PENDING' NOT NULL,\n  \"targetType\" text NOT NULL,\n  \"targetValue\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"crawlJob_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM')),\n  CONSTRAINT \"crawlJob_status_check_e31902a8\" CHECK (\"status\" IN ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"crawlJob\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlJob\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.hashtag",
+    "label": "Create table \"hashtag\"",
+    "summary": "Creates table \"hashtag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "hashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"hashtag\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"hashtag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"hashtag\"",
+        "sql": "CREATE TABLE \"public\".\"hashtag\" (\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"platform\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"hashtag_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"hashtag\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"hashtag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.media",
+    "label": "Create table \"media\"",
+    "summary": "Creates table \"media\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "media"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"media\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"media\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"media\"",
+        "sql": "CREATE TABLE \"public\".\"media\" (\n  \"bucket\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"duration\" int4,\n  \"fileSize\" int8,\n  \"height\" int4,\n  \"id\" SERIAL NOT NULL,\n  \"mediaType\" text,\n  \"mimeType\" text,\n  \"objectKey\" text NOT NULL,\n  \"postId\" int4 NOT NULL,\n  \"sha256\" text,\n  \"storageProvider\" text NOT NULL,\n  \"width\" int4,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"media\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"media\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.postHashtag",
+    "label": "Create table \"postHashtag\"",
+    "summary": "Creates table \"postHashtag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "postHashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"postHashtag\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postHashtag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"postHashtag\"",
+        "sql": "CREATE TABLE \"public\".\"postHashtag\" (\n  \"hashtagId\" int4 NOT NULL,\n  \"postId\" int4 NOT NULL,\n  PRIMARY KEY (\"postId\", \"hashtagId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"postHashtag\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postHashtag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.postSound",
+    "label": "Create table \"postSound\"",
+    "summary": "Creates table \"postSound\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "postSound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"postSound\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postSound\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"postSound\"",
+        "sql": "CREATE TABLE \"public\".\"postSound\" (\n  \"postId\" int4 NOT NULL,\n  \"soundId\" int4 NOT NULL,\n  PRIMARY KEY (\"postId\", \"soundId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"postSound\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postSound\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.rawObject",
+    "label": "Create table \"rawObject\"",
+    "summary": "Creates table \"rawObject\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "rawObject"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"rawObject\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rawObject\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"rawObject\"",
+        "sql": "CREATE TABLE \"public\".\"rawObject\" (\n  \"bucket\" text NOT NULL,\n  \"contentType\" text,\n  \"fetchedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fileSize\" int8,\n  \"id\" SERIAL NOT NULL,\n  \"objectKey\" text NOT NULL,\n  \"objectType\" text NOT NULL,\n  \"platform\" text NOT NULL,\n  \"sha256\" text,\n  \"sourceId\" text,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"rawObject_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"rawObject\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rawObject\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialAccount",
+    "label": "Create table \"socialAccount\"",
+    "summary": "Creates table \"socialAccount\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialAccount"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialAccount\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialAccount\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialAccount\"",
+        "sql": "CREATE TABLE \"public\".\"socialAccount\" (\n  \"avatarUrl\" text,\n  \"bio\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"displayName\" text,\n  \"id\" SERIAL NOT NULL,\n  \"isVerified\" bool DEFAULT false NOT NULL,\n  \"platform\" text NOT NULL,\n  \"platformUserId\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"username\" text,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"socialAccount_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialAccount\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialAccount\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialComment",
+    "label": "Create table \"socialComment\"",
+    "summary": "Creates table \"socialComment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialComment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialComment\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialComment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialComment\"",
+        "sql": "CREATE TABLE \"public\".\"socialComment\" (\n  \"id\" SERIAL NOT NULL,\n  \"likeCount\" int8,\n  \"parentCommentId\" text,\n  \"platform\" text NOT NULL,\n  \"platformCommentId\" text NOT NULL,\n  \"postId\" int4 NOT NULL,\n  \"publishedAt\" timestamptz,\n  \"replyCount\" int8,\n  \"text\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"socialComment_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialComment\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialComment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialPost",
+    "label": "Create table \"socialPost\"",
+    "summary": "Creates table \"socialPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialPost\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialPost\"",
+        "sql": "CREATE TABLE \"public\".\"socialPost\" (\n  \"accountId\" int4 NOT NULL,\n  \"caption\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"duration\" int4,\n  \"id\" SERIAL NOT NULL,\n  \"language\" text,\n  \"mediaUrl\" text,\n  \"permalink\" text,\n  \"platform\" text NOT NULL,\n  \"platformPostId\" text NOT NULL,\n  \"postType\" text,\n  \"publishedAt\" timestamptz,\n  \"thumbnailUrl\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"socialPost_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialPost\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialPostMetric",
+    "label": "Create table \"socialPostMetric\"",
+    "summary": "Creates table \"socialPostMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialPostMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialPostMetric\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialPostMetric\"",
+        "sql": "CREATE TABLE \"public\".\"socialPostMetric\" (\n  \"comments\" int8,\n  \"favorites\" int8,\n  \"id\" SERIAL NOT NULL,\n  \"likes\" int8,\n  \"postId\" int4 NOT NULL,\n  \"recordedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"shares\" int8,\n  \"views\" int8,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialPostMetric\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.sound",
+    "label": "Create table \"sound\"",
+    "summary": "Creates table \"sound\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "sound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sound\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sound\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sound\"",
+        "sql": "CREATE TABLE \"public\".\"sound\" (\n  \"artist\" text,\n  \"duration\" int4,\n  \"id\" SERIAL NOT NULL,\n  \"platform\" text NOT NULL,\n  \"platformSoundId\" text NOT NULL,\n  \"title\" text,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"sound_platform_check_87376b54\" CHECK (\"platform\" IN ('TIKTOK', 'INSTAGRAM'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sound\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sound\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.hashtag.hashtag_platform_name_key",
+    "label": "Add unique constraint on \"hashtag\" (platform, name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "hashtag_platform_name_key",
+        "table": "hashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"hashtag_platform_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "hashtag_platform_name_key",
+          "public",
+          "\"public\".\"hashtag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"hashtag_platform_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"hashtag\" ADD CONSTRAINT \"hashtag_platform_name_key\" UNIQUE (\"platform\", \"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"hashtag_platform_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "hashtag_platform_name_key",
+          "public",
+          "\"public\".\"hashtag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.media.media_storageProvider_bucket_objectKey_key",
+    "label": "Add unique constraint on \"media\" (storageProvider, bucket, objectKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "media_storageProvider_bucket_objectKey_key",
+        "table": "media"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"media_storageProvider_bucket_objectKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "media_storageProvider_bucket_objectKey_key",
+          "public",
+          "\"public\".\"media\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"media_storageProvider_bucket_objectKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"media\" ADD CONSTRAINT \"media_storageProvider_bucket_objectKey_key\" UNIQUE (\"storageProvider\", \"bucket\", \"objectKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"media_storageProvider_bucket_objectKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "media_storageProvider_bucket_objectKey_key",
+          "public",
+          "\"public\".\"media\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialAccount.socialAccount_platform_platformUserId_key",
+    "label": "Add unique constraint on \"socialAccount\" (platform, platformUserId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialAccount_platform_platformUserId_key",
+        "table": "socialAccount"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialAccount_platform_platformUserId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialAccount_platform_platformUserId_key",
+          "public",
+          "\"public\".\"socialAccount\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialAccount_platform_platformUserId_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialAccount\" ADD CONSTRAINT \"socialAccount_platform_platformUserId_key\" UNIQUE (\"platform\", \"platformUserId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialAccount_platform_platformUserId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialAccount_platform_platformUserId_key",
+          "public",
+          "\"public\".\"socialAccount\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialComment.socialComment_platform_platformCommentId_key",
+    "label": "Add unique constraint on \"socialComment\" (platform, platformCommentId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialComment_platform_platformCommentId_key",
+        "table": "socialComment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialComment_platform_platformCommentId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialComment_platform_platformCommentId_key",
+          "public",
+          "\"public\".\"socialComment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialComment_platform_platformCommentId_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialComment\" ADD CONSTRAINT \"socialComment_platform_platformCommentId_key\" UNIQUE (\"platform\", \"platformCommentId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialComment_platform_platformCommentId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialComment_platform_platformCommentId_key",
+          "public",
+          "\"public\".\"socialComment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialPost.socialPost_platform_platformPostId_key",
+    "label": "Add unique constraint on \"socialPost\" (platform, platformPostId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialPost_platform_platformPostId_key",
+        "table": "socialPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialPost_platform_platformPostId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialPost_platform_platformPostId_key",
+          "public",
+          "\"public\".\"socialPost\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialPost_platform_platformPostId_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialPost\" ADD CONSTRAINT \"socialPost_platform_platformPostId_key\" UNIQUE (\"platform\", \"platformPostId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialPost_platform_platformPostId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialPost_platform_platformPostId_key",
+          "public",
+          "\"public\".\"socialPost\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.sound.sound_platform_platformSoundId_key",
+    "label": "Add unique constraint on \"sound\" (platform, platformSoundId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "sound_platform_platformSoundId_key",
+        "table": "sound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"sound_platform_platformSoundId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sound_platform_platformSoundId_key",
+          "public",
+          "\"public\".\"sound\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"sound_platform_platformSoundId_key\"",
+        "sql": "ALTER TABLE \"public\".\"sound\" ADD CONSTRAINT \"sound_platform_platformSoundId_key\" UNIQUE (\"platform\", \"platformSoundId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"sound_platform_platformSoundId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sound_platform_platformSoundId_key",
+          "public",
+          "\"public\".\"sound\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.accountMetric.accountMetric_accountId_idx_cbfb3085",
+    "label": "Create index \"accountMetric_accountId_idx_cbfb3085\" on \"accountMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "accountMetric_accountId_idx_cbfb3085",
+        "table": "accountMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"accountMetric_accountId_idx_cbfb3085\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"accountMetric_accountId_idx_cbfb3085\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"accountMetric_accountId_idx_cbfb3085\"",
+        "sql": "CREATE INDEX \"accountMetric_accountId_idx_cbfb3085\" ON \"public\".\"accountMetric\" (\"accountId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"accountMetric_accountId_idx_cbfb3085\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"accountMetric_accountId_idx_cbfb3085\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.accountMetric.accountMetric_accountId_recordedAt_idx_1e1a8356",
+    "label": "Create index \"accountMetric_accountId_recordedAt_idx_1e1a8356\" on \"accountMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "accountMetric_accountId_recordedAt_idx_1e1a8356",
+        "table": "accountMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"accountMetric_accountId_recordedAt_idx_1e1a8356\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"accountMetric_accountId_recordedAt_idx_1e1a8356\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"accountMetric_accountId_recordedAt_idx_1e1a8356\"",
+        "sql": "CREATE INDEX \"accountMetric_accountId_recordedAt_idx_1e1a8356\" ON \"public\".\"accountMetric\" (\"accountId\", \"recordedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"accountMetric_accountId_recordedAt_idx_1e1a8356\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"accountMetric_accountId_recordedAt_idx_1e1a8356\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.crawlError.crawlError_jobId_idx_623c8f77",
+    "label": "Create index \"crawlError_jobId_idx_623c8f77\" on \"crawlError\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crawlError_jobId_idx_623c8f77",
+        "table": "crawlError"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crawlError_jobId_idx_623c8f77\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlError_jobId_idx_623c8f77\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"crawlError_jobId_idx_623c8f77\"",
+        "sql": "CREATE INDEX \"crawlError_jobId_idx_623c8f77\" ON \"public\".\"crawlError\" (\"jobId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crawlError_jobId_idx_623c8f77\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlError_jobId_idx_623c8f77\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.crawlJob.crawlJob_platform_status_idx_ef2b8345",
+    "label": "Create index \"crawlJob_platform_status_idx_ef2b8345\" on \"crawlJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crawlJob_platform_status_idx_ef2b8345",
+        "table": "crawlJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crawlJob_platform_status_idx_ef2b8345\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlJob_platform_status_idx_ef2b8345\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"crawlJob_platform_status_idx_ef2b8345\"",
+        "sql": "CREATE INDEX \"crawlJob_platform_status_idx_ef2b8345\" ON \"public\".\"crawlJob\" (\"platform\", \"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crawlJob_platform_status_idx_ef2b8345\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crawlJob_platform_status_idx_ef2b8345\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.media.media_postId_idx_a7a72715",
+    "label": "Create index \"media_postId_idx_a7a72715\" on \"media\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "media_postId_idx_a7a72715",
+        "table": "media"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"media_postId_idx_a7a72715\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"media_postId_idx_a7a72715\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"media_postId_idx_a7a72715\"",
+        "sql": "CREATE INDEX \"media_postId_idx_a7a72715\" ON \"public\".\"media\" (\"postId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"media_postId_idx_a7a72715\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"media_postId_idx_a7a72715\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.postHashtag.postHashtag_hashtagId_idx_d1269a37",
+    "label": "Create index \"postHashtag_hashtagId_idx_d1269a37\" on \"postHashtag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "postHashtag_hashtagId_idx_d1269a37",
+        "table": "postHashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"postHashtag_hashtagId_idx_d1269a37\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postHashtag_hashtagId_idx_d1269a37\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"postHashtag_hashtagId_idx_d1269a37\"",
+        "sql": "CREATE INDEX \"postHashtag_hashtagId_idx_d1269a37\" ON \"public\".\"postHashtag\" (\"hashtagId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"postHashtag_hashtagId_idx_d1269a37\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postHashtag_hashtagId_idx_d1269a37\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.postHashtag.postHashtag_postId_idx_a7a72715",
+    "label": "Create index \"postHashtag_postId_idx_a7a72715\" on \"postHashtag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "postHashtag_postId_idx_a7a72715",
+        "table": "postHashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"postHashtag_postId_idx_a7a72715\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postHashtag_postId_idx_a7a72715\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"postHashtag_postId_idx_a7a72715\"",
+        "sql": "CREATE INDEX \"postHashtag_postId_idx_a7a72715\" ON \"public\".\"postHashtag\" (\"postId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"postHashtag_postId_idx_a7a72715\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postHashtag_postId_idx_a7a72715\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.postSound.postSound_postId_idx_a7a72715",
+    "label": "Create index \"postSound_postId_idx_a7a72715\" on \"postSound\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "postSound_postId_idx_a7a72715",
+        "table": "postSound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"postSound_postId_idx_a7a72715\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postSound_postId_idx_a7a72715\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"postSound_postId_idx_a7a72715\"",
+        "sql": "CREATE INDEX \"postSound_postId_idx_a7a72715\" ON \"public\".\"postSound\" (\"postId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"postSound_postId_idx_a7a72715\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postSound_postId_idx_a7a72715\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.postSound.postSound_soundId_idx_a12d06a7",
+    "label": "Create index \"postSound_soundId_idx_a12d06a7\" on \"postSound\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "postSound_soundId_idx_a12d06a7",
+        "table": "postSound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"postSound_soundId_idx_a12d06a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postSound_soundId_idx_a12d06a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"postSound_soundId_idx_a12d06a7\"",
+        "sql": "CREATE INDEX \"postSound_soundId_idx_a12d06a7\" ON \"public\".\"postSound\" (\"soundId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"postSound_soundId_idx_a12d06a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"postSound_soundId_idx_a12d06a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.rawObject.rawObject_platform_objectType_idx_152e4009",
+    "label": "Create index \"rawObject_platform_objectType_idx_152e4009\" on \"rawObject\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "rawObject_platform_objectType_idx_152e4009",
+        "table": "rawObject"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"rawObject_platform_objectType_idx_152e4009\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rawObject_platform_objectType_idx_152e4009\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"rawObject_platform_objectType_idx_152e4009\"",
+        "sql": "CREATE INDEX \"rawObject_platform_objectType_idx_152e4009\" ON \"public\".\"rawObject\" (\"platform\", \"objectType\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"rawObject_platform_objectType_idx_152e4009\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rawObject_platform_objectType_idx_152e4009\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.rawObject.rawObject_sourceId_idx_d92a2571",
+    "label": "Create index \"rawObject_sourceId_idx_d92a2571\" on \"rawObject\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "rawObject_sourceId_idx_d92a2571",
+        "table": "rawObject"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"rawObject_sourceId_idx_d92a2571\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rawObject_sourceId_idx_d92a2571\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"rawObject_sourceId_idx_d92a2571\"",
+        "sql": "CREATE INDEX \"rawObject_sourceId_idx_d92a2571\" ON \"public\".\"rawObject\" (\"sourceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"rawObject_sourceId_idx_d92a2571\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rawObject_sourceId_idx_d92a2571\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialAccount.socialAccount_platform_username_idx_16403622",
+    "label": "Create index \"socialAccount_platform_username_idx_16403622\" on \"socialAccount\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialAccount_platform_username_idx_16403622",
+        "table": "socialAccount"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialAccount_platform_username_idx_16403622\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialAccount_platform_username_idx_16403622\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialAccount_platform_username_idx_16403622\"",
+        "sql": "CREATE INDEX \"socialAccount_platform_username_idx_16403622\" ON \"public\".\"socialAccount\" (\"platform\", \"username\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialAccount_platform_username_idx_16403622\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialAccount_platform_username_idx_16403622\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialComment.socialComment_postId_idx_a7a72715",
+    "label": "Create index \"socialComment_postId_idx_a7a72715\" on \"socialComment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialComment_postId_idx_a7a72715",
+        "table": "socialComment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialComment_postId_idx_a7a72715\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialComment_postId_idx_a7a72715\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialComment_postId_idx_a7a72715\"",
+        "sql": "CREATE INDEX \"socialComment_postId_idx_a7a72715\" ON \"public\".\"socialComment\" (\"postId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialComment_postId_idx_a7a72715\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialComment_postId_idx_a7a72715\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialComment.socialComment_postId_publishedAt_idx_282997c6",
+    "label": "Create index \"socialComment_postId_publishedAt_idx_282997c6\" on \"socialComment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialComment_postId_publishedAt_idx_282997c6",
+        "table": "socialComment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialComment_postId_publishedAt_idx_282997c6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialComment_postId_publishedAt_idx_282997c6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialComment_postId_publishedAt_idx_282997c6\"",
+        "sql": "CREATE INDEX \"socialComment_postId_publishedAt_idx_282997c6\" ON \"public\".\"socialComment\" (\"postId\", \"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialComment_postId_publishedAt_idx_282997c6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialComment_postId_publishedAt_idx_282997c6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialPost.socialPost_accountId_idx_cbfb3085",
+    "label": "Create index \"socialPost_accountId_idx_cbfb3085\" on \"socialPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialPost_accountId_idx_cbfb3085",
+        "table": "socialPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialPost_accountId_idx_cbfb3085\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost_accountId_idx_cbfb3085\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialPost_accountId_idx_cbfb3085\"",
+        "sql": "CREATE INDEX \"socialPost_accountId_idx_cbfb3085\" ON \"public\".\"socialPost\" (\"accountId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialPost_accountId_idx_cbfb3085\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost_accountId_idx_cbfb3085\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialPost.socialPost_accountId_publishedAt_idx_47d344f9",
+    "label": "Create index \"socialPost_accountId_publishedAt_idx_47d344f9\" on \"socialPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialPost_accountId_publishedAt_idx_47d344f9",
+        "table": "socialPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialPost_accountId_publishedAt_idx_47d344f9\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost_accountId_publishedAt_idx_47d344f9\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialPost_accountId_publishedAt_idx_47d344f9\"",
+        "sql": "CREATE INDEX \"socialPost_accountId_publishedAt_idx_47d344f9\" ON \"public\".\"socialPost\" (\"accountId\", \"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialPost_accountId_publishedAt_idx_47d344f9\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost_accountId_publishedAt_idx_47d344f9\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialPost.socialPost_platform_publishedAt_idx_182a8f8e",
+    "label": "Create index \"socialPost_platform_publishedAt_idx_182a8f8e\" on \"socialPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialPost_platform_publishedAt_idx_182a8f8e",
+        "table": "socialPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialPost_platform_publishedAt_idx_182a8f8e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost_platform_publishedAt_idx_182a8f8e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialPost_platform_publishedAt_idx_182a8f8e\"",
+        "sql": "CREATE INDEX \"socialPost_platform_publishedAt_idx_182a8f8e\" ON \"public\".\"socialPost\" (\"platform\", \"publishedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialPost_platform_publishedAt_idx_182a8f8e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPost_platform_publishedAt_idx_182a8f8e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialPostMetric.socialPostMetric_postId_idx_a7a72715",
+    "label": "Create index \"socialPostMetric_postId_idx_a7a72715\" on \"socialPostMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialPostMetric_postId_idx_a7a72715",
+        "table": "socialPostMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialPostMetric_postId_idx_a7a72715\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric_postId_idx_a7a72715\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialPostMetric_postId_idx_a7a72715\"",
+        "sql": "CREATE INDEX \"socialPostMetric_postId_idx_a7a72715\" ON \"public\".\"socialPostMetric\" (\"postId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialPostMetric_postId_idx_a7a72715\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric_postId_idx_a7a72715\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialPostMetric.socialPostMetric_postId_recordedAt_idx_6a3131d7",
+    "label": "Create index \"socialPostMetric_postId_recordedAt_idx_6a3131d7\" on \"socialPostMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialPostMetric_postId_recordedAt_idx_6a3131d7",
+        "table": "socialPostMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialPostMetric_postId_recordedAt_idx_6a3131d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric_postId_recordedAt_idx_6a3131d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialPostMetric_postId_recordedAt_idx_6a3131d7\"",
+        "sql": "CREATE INDEX \"socialPostMetric_postId_recordedAt_idx_6a3131d7\" ON \"public\".\"socialPostMetric\" (\"postId\", \"recordedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialPostMetric_postId_recordedAt_idx_6a3131d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric_postId_recordedAt_idx_6a3131d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialPostMetric.socialPostMetric_recordedAt_idx_fd5b4732",
+    "label": "Create index \"socialPostMetric_recordedAt_idx_fd5b4732\" on \"socialPostMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialPostMetric_recordedAt_idx_fd5b4732",
+        "table": "socialPostMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialPostMetric_recordedAt_idx_fd5b4732\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric_recordedAt_idx_fd5b4732\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialPostMetric_recordedAt_idx_fd5b4732\"",
+        "sql": "CREATE INDEX \"socialPostMetric_recordedAt_idx_fd5b4732\" ON \"public\".\"socialPostMetric\" (\"recordedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialPostMetric_recordedAt_idx_fd5b4732\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialPostMetric_recordedAt_idx_fd5b4732\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.accountMetric.accountMetric_accountId_fkey",
+    "label": "Add foreign key \"accountMetric_accountId_fkey\" on \"accountMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "accountMetric_accountId_fkey",
+        "table": "accountMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"accountMetric_accountId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "accountMetric_accountId_fkey",
+          "public",
+          "\"public\".\"accountMetric\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"accountMetric_accountId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"accountMetric\"\nADD CONSTRAINT \"accountMetric_accountId_fkey\"\nFOREIGN KEY (\"accountId\")\nREFERENCES \"public\".\"socialAccount\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"accountMetric_accountId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "accountMetric_accountId_fkey",
+          "public",
+          "\"public\".\"accountMetric\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.media.media_postId_fkey",
+    "label": "Add foreign key \"media_postId_fkey\" on \"media\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "media_postId_fkey",
+        "table": "media"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"media_postId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "media_postId_fkey",
+          "public",
+          "\"public\".\"media\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"media_postId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"media\"\nADD CONSTRAINT \"media_postId_fkey\"\nFOREIGN KEY (\"postId\")\nREFERENCES \"public\".\"socialPost\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"media_postId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "media_postId_fkey",
+          "public",
+          "\"public\".\"media\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.postHashtag.postHashtag_postId_fkey",
+    "label": "Add foreign key \"postHashtag_postId_fkey\" on \"postHashtag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "postHashtag_postId_fkey",
+        "table": "postHashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"postHashtag_postId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postHashtag_postId_fkey",
+          "public",
+          "\"public\".\"postHashtag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"postHashtag_postId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"postHashtag\"\nADD CONSTRAINT \"postHashtag_postId_fkey\"\nFOREIGN KEY (\"postId\")\nREFERENCES \"public\".\"socialPost\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"postHashtag_postId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postHashtag_postId_fkey",
+          "public",
+          "\"public\".\"postHashtag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.postHashtag.postHashtag_hashtagId_fkey",
+    "label": "Add foreign key \"postHashtag_hashtagId_fkey\" on \"postHashtag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "postHashtag_hashtagId_fkey",
+        "table": "postHashtag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"postHashtag_hashtagId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postHashtag_hashtagId_fkey",
+          "public",
+          "\"public\".\"postHashtag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"postHashtag_hashtagId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"postHashtag\"\nADD CONSTRAINT \"postHashtag_hashtagId_fkey\"\nFOREIGN KEY (\"hashtagId\")\nREFERENCES \"public\".\"hashtag\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"postHashtag_hashtagId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postHashtag_hashtagId_fkey",
+          "public",
+          "\"public\".\"postHashtag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.postSound.postSound_postId_fkey",
+    "label": "Add foreign key \"postSound_postId_fkey\" on \"postSound\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "postSound_postId_fkey",
+        "table": "postSound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"postSound_postId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postSound_postId_fkey",
+          "public",
+          "\"public\".\"postSound\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"postSound_postId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"postSound\"\nADD CONSTRAINT \"postSound_postId_fkey\"\nFOREIGN KEY (\"postId\")\nREFERENCES \"public\".\"socialPost\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"postSound_postId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postSound_postId_fkey",
+          "public",
+          "\"public\".\"postSound\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.postSound.postSound_soundId_fkey",
+    "label": "Add foreign key \"postSound_soundId_fkey\" on \"postSound\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "postSound_soundId_fkey",
+        "table": "postSound"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"postSound_soundId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postSound_soundId_fkey",
+          "public",
+          "\"public\".\"postSound\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"postSound_soundId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"postSound\"\nADD CONSTRAINT \"postSound_soundId_fkey\"\nFOREIGN KEY (\"soundId\")\nREFERENCES \"public\".\"sound\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"postSound_soundId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "postSound_soundId_fkey",
+          "public",
+          "\"public\".\"postSound\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialComment.socialComment_postId_fkey",
+    "label": "Add foreign key \"socialComment_postId_fkey\" on \"socialComment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialComment_postId_fkey",
+        "table": "socialComment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialComment_postId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialComment_postId_fkey",
+          "public",
+          "\"public\".\"socialComment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialComment_postId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialComment\"\nADD CONSTRAINT \"socialComment_postId_fkey\"\nFOREIGN KEY (\"postId\")\nREFERENCES \"public\".\"socialPost\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialComment_postId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialComment_postId_fkey",
+          "public",
+          "\"public\".\"socialComment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialPost.socialPost_accountId_fkey",
+    "label": "Add foreign key \"socialPost_accountId_fkey\" on \"socialPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialPost_accountId_fkey",
+        "table": "socialPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialPost_accountId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialPost_accountId_fkey",
+          "public",
+          "\"public\".\"socialPost\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialPost_accountId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialPost\"\nADD CONSTRAINT \"socialPost_accountId_fkey\"\nFOREIGN KEY (\"accountId\")\nREFERENCES \"public\".\"socialAccount\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialPost_accountId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialPost_accountId_fkey",
+          "public",
+          "\"public\".\"socialPost\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialPostMetric.socialPostMetric_postId_fkey",
+    "label": "Add foreign key \"socialPostMetric_postId_fkey\" on \"socialPostMetric\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialPostMetric_postId_fkey",
+        "table": "socialPostMetric"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialPostMetric_postId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialPostMetric_postId_fkey",
+          "public",
+          "\"public\".\"socialPostMetric\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialPostMetric_postId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialPostMetric\"\nADD CONSTRAINT \"socialPostMetric_postId_fkey\"\nFOREIGN KEY (\"postId\")\nREFERENCES \"public\".\"socialPost\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialPostMetric_postId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialPostMetric_postId_fkey",
+          "public",
+          "\"public\".\"socialPostMetric\""
+        ]
+      }
+    ]
+  }
+]
