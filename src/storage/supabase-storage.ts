@@ -12,13 +12,16 @@ if (!supabaseSecretKey) {
   throw new Error("Missing SUPABASE_SECRET_KEY in .env");
 }
 
-const BUCKET_NAME = "social-media";
+export const BUCKET_NAME = "social-media";
 
 export const supabase = createClient(
   supabaseUrl,
   supabaseSecretKey
 );
 
+/**
+ * Upload file lên Supabase Storage
+ */
 export async function uploadMedia(
   fileBuffer: Buffer,
   objectKey: string,
@@ -39,6 +42,9 @@ export async function uploadMedia(
   return data;
 }
 
+/**
+ * Lấy public URL của file
+ */
 export function getPublicUrl(objectKey: string): string {
   const { data } = supabase.storage
     .from(BUCKET_NAME)
@@ -47,6 +53,9 @@ export function getPublicUrl(objectKey: string): string {
   return data.publicUrl;
 }
 
+/**
+ * Xóa file khỏi Supabase Storage
+ */
 export async function deleteMedia(objectKey: string) {
   const { error } = await supabase.storage
     .from(BUCKET_NAME)
